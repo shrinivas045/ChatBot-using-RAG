@@ -3,7 +3,7 @@ from utils.embedder import get_embedding
 from utils.llm_utils import query_llm
 import numpy as np
 
-st.title("💬 RAG Chatbot")
+st.title("RAG Assistant")
 
 # Custom CSS
 st.markdown("""
