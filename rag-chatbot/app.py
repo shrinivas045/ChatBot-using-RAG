@@ -3,38 +3,40 @@ from utils.embedder import get_embedding
 from utils.llm_utils import query_llm
 import numpy as np
 
-# App title
-st.markdown("<h1 style='text-align: center;'>🤖 RAG Assistant</h1>", unsafe_allow_html=True)
+# App Title
+st.markdown("<h1 style='text-align: center; color:#4F46E5;'>💬 RAG Assistant</h1>", unsafe_allow_html=True)
 
-# Custom CSS for chat bubbles and layout
+# Custom CSS for colorful bubbles and layout
 st.markdown("""
     <style>
-    .user-bubble {
-        background-color: #DCF8C6;
-        padding: 10px 15px;
-        border-radius: 15px;
-        margin: 5px 0;
-        width: fit-content;
-        max-width: 80%;
-        align-self: flex-end;
-    }
-    .bot-bubble {
-        background-color: #F1F0F0;
-        padding: 10px 15px;
-        border-radius: 15px;
-        margin: 5px 0;
-        width: fit-content;
-        max-width: 80%;
-        align-self: flex-start;
-    }
     .chat-container {
         display: flex;
         flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .user-bubble {
+        align-self: flex-end;
+        background: linear-gradient(135deg, #3B82F6, #60A5FA);
+        color: white;
+        padding: 12px 16px;
+        border-radius: 18px;
+        max-width: 80%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .bot-bubble {
+        align-self: flex-start;
+        background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+        color: white;
+        padding: 12px 16px;
+        border-radius: 18px;
+        max-width: 80%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     .input-container {
-        padding-top: 10px;
-        margin-top: 10px;
-        border-top: 1px solid #e6e6e6;
+        margin-top: 25px;
+        padding-top: 15px;
+        border-top: 1px solid #e0e0e0;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -65,12 +67,12 @@ if not st.session_state.context_set:
     st.session_state.context_embeddings = [get_embedding(chunk) for chunk in context_chunks]
     st.session_state.context_set = True
 
-# Display full chat history
+# Display chat history
 if st.session_state.chat_history:
     st.markdown('<div class="chat-container">', unsafe_allow_html=True)
     for entry in st.session_state.chat_history:
-        st.markdown(f"<div class='user-bubble'><strong>You:</strong> {entry['question']}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div class='bot-bubble'><strong>Bot:</strong> {entry['answer']}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='user-bubble'>🧑‍💬 {entry['question']}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='bot-bubble'>🤖 {entry['answer']}</div>", unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 # Chat input section
@@ -113,7 +115,7 @@ if st.session_state.context_set and st.session_state.show_input_box:
                     else:
                         answer = str(response)
 
-                    # Add to chat history
+                    # Append to chat history
                     st.session_state.chat_history.append({
                         "question": user_input,
                         "answer": answer
