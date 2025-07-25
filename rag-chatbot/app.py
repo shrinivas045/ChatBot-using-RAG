@@ -6,42 +6,44 @@ import numpy as np
 # App Title
 st.markdown("<h1 style='text-align: center; color:#4F46E5;'>💬 RAG Assistant</h1>", unsafe_allow_html=True)
 
-# Custom CSS for colorful bubbles and layout
+# Custom CSS for monocolor layout with spacing
 st.markdown("""
     <style>
     .chat-container {
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        margin-bottom: 20px;
+        gap: 24px;
+        margin-bottom: 30px;
     }
     .user-bubble {
         align-self: flex-end;
-        background: linear-gradient(135deg, #3B82F6, #60A5FA);
-        color: white;
+        background: #D0E8FF;
+        color: #1E3A8A;
         padding: 12px 16px;
-        border-radius: 18px;
-        max-width: 80%;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        max-width: 75%;
+        font-size: 16px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
     .bot-bubble {
         align-self: flex-start;
-        background: linear-gradient(135deg, #8B5CF6, #A78BFA);
-        color: white;
+        background: #F1F1F1;
+        color: #111827;
         padding: 12px 16px;
-        border-radius: 18px;
-        max-width: 80%;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        max-width: 75%;
+        font-size: 16px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
     .input-container {
-        margin-top: 25px;
+        margin-top: 20px;
         padding-top: 15px;
         border-top: 1px solid #e0e0e0;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Session state initialization
+# Session state init
 if "context_set" not in st.session_state:
     st.session_state.context_set = False
     st.session_state.context_text = ""
@@ -75,7 +77,7 @@ if st.session_state.chat_history:
         st.markdown(f"<div class='bot-bubble'>🤖 {entry['answer']}</div>", unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Chat input section
+# Chat input
 if st.session_state.context_set and st.session_state.show_input_box:
     with st.container():
         st.markdown('<div class="input-container">', unsafe_allow_html=True)
@@ -100,22 +102,15 @@ if st.session_state.context_set and st.session_state.show_input_box:
                     if relevant_chunks:
                         relevant_context = "\n".join(relevant_chunks)
 
-                if relevant_context:
-                    prompt = f"Answer the question based on the context below:\n\nContext:\n{relevant_context}\n\nQuestion: {user_input}"
-                else:
-                    prompt = user_input
+                prompt = f"Answer the question based on the context below:\n\nContext:\n{relevant_context}\n\nQuestion: {user_input}" if relevant_context else user_input
 
                 response = query_llm(prompt, provider="groq")
 
                 if 'error' in response:
                     st.error(f"Error: {response['error']}")
                 else:
-                    if 'choices' in response:
-                        answer = response['choices'][0]['message']['content']
-                    else:
-                        answer = str(response)
+                    answer = response['choices'][0]['message']['content'] if 'choices' in response else str(response)
 
-                    # Append to chat history
                     st.session_state.chat_history.append({
                         "question": user_input,
                         "answer": answer
