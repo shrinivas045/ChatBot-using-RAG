@@ -32,24 +32,21 @@ if "context_set" not in st.session_state:
 if "show_input_box" not in st.session_state:
     st.session_state.show_input_box = True
 
-# Context input form (only once)
+# Hardcoded context
 if not st.session_state.context_set:
-    with st.form("context_form"):
-        st.markdown('Enter context for this chat (optional):', unsafe_allow_html=True)
-        context_text = st.text_area(" ", key="context_text_area")
-        submit_context = st.form_submit_button("Set Context")
-    if submit_context:
-        st.session_state.context_text = context_text
-        if context_text.strip():
-            context_chunks = [chunk.strip() for chunk in context_text.split('\n\n') if chunk.strip()]
-            st.session_state.context_chunks = context_chunks
-            st.session_state.context_embeddings = [get_embedding(chunk) for chunk in context_chunks]
-        else:
-            st.session_state.context_chunks = []
-            st.session_state.context_embeddings = []
-        st.session_state.context_set = True
-        st.rerun()
-    st.stop()
+    hardcoded_context = """
+    Streamlit is an open-source Python library that makes it easy to create and share custom web apps for machine learning and data science. 
+    In just a few minutes you can build and deploy powerful data apps - so let’s get started!
+
+    RAG stands for Retrieval-Augmented Generation. It combines document retrieval with a generative model like GPT to answer questions 
+    based on specific context or documents. This approach improves accuracy and reduces hallucination.
+    """
+
+    context_chunks = [chunk.strip() for chunk in hardcoded_context.split('\n\n') if chunk.strip()]
+    st.session_state.context_text = hardcoded_context
+    st.session_state.context_chunks = context_chunks
+    st.session_state.context_embeddings = [get_embedding(chunk) for chunk in context_chunks]
+    st.session_state.context_set = True
 
 # Display full chat history
 if st.session_state.chat_history:
