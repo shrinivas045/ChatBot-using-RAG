@@ -6,7 +6,7 @@ import numpy as np
 # App Title
 st.markdown("<h1 style='text-align: center; color:#4F46E5;'>💬 RAG Assistant</h1>", unsafe_allow_html=True)
 
-# Custom CSS
+# Custom CSS for monocolor layout with spacing
 st.markdown("""
     <style>
     .chat-container {
@@ -43,7 +43,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Session State Init
+# Session state init
 if "context_set" not in st.session_state:
     st.session_state.context_set = False
     st.session_state.context_text = ""
@@ -51,13 +51,10 @@ if "context_set" not in st.session_state:
     st.session_state.context_embeddings = []
     st.session_state.chat_history = []
 
-if "chat_input" not in st.session_state:
-    st.session_state.chat_input = ""
+if "show_input_box" not in st.session_state:
+    st.session_state.show_input_box = True
 
-if "clear_input" not in st.session_state:
-    st.session_state.clear_input = False
-
-# Hardcoded Context
+# Hardcoded context
 if not st.session_state.context_set:
     hardcoded_context = """
     Streamlit is an open-source Python library that makes it easy to create and share custom web apps for machine learning and data science. 
@@ -72,12 +69,7 @@ if not st.session_state.context_set:
     st.session_state.context_embeddings = [get_embedding(chunk) for chunk in context_chunks]
     st.session_state.context_set = True
 
-# Clear input after rerun
-if st.session_state.clear_input:
-    st.session_state.chat_input = ""
-    st.session_state.clear_input = False
-
-# Show chat history
+# Display chat history
 if st.session_state.chat_history:
     st.markdown('<div class="chat-container">', unsafe_allow_html=True)
     for entry in st.session_state.chat_history:
@@ -86,7 +78,7 @@ if st.session_state.chat_history:
     st.markdown('</div>', unsafe_allow_html=True)
 
 # Chat input
-if st.session_state.context_set:
+if st.session_state.context_set and st.session_state.show_input_box:
     with st.container():
         st.markdown('<div class="input-container">', unsafe_allow_html=True)
         user_input = st.text_input("Type your question here...", key="chat_input")
@@ -123,10 +115,7 @@ if st.session_state.context_set:
                         "question": user_input,
                         "answer": answer
                     })
-
-                    # Signal to clear the input on next run
-                    st.session_state.clear_input = True
-                    st.experimental_rerun()
+                    st.rerun()
 
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
